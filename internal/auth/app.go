@@ -14,63 +14,55 @@
 	limitations under the License.
 */
 
-package backend
+package auth
 
 import (
 	"github.com/GearFramework/emarket/internal/app"
 	"github.com/GearFramework/emarket/internal/pkg/alog"
-	"github.com/GearFramework/emarket/internal/pkg/auth"
 	"github.com/GearFramework/emarket/internal/pkg/server"
 	"github.com/GearFramework/emarket/internal/pkg/server/middleware"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
-type Backend struct {
+type ServiceAuth struct {
 	EnvFile string
 	Flags   *Flags
 	Server  *server.HttpServer
-	Config  *app.ServiceBackendConfig
+	Config  *app.ServiceAuthConfig
 	logger  *alog.Alog
 }
 
-func NewBackend(envFile string) *Backend {
-	return &Backend{
+func NewServiceAuth(envFile string) *ServiceAuth {
+	return &ServiceAuth{
 		EnvFile: envFile,
 		logger:  alog.NewLogger(),
 	}
 }
 
-func (app *Backend) Init() error {
-	if err := NewEnv(app.EnvFile); err != nil {
-		return err
-	}
-	app.Flags = GetFlags(GetDefaultFlags())
-	app.Config = NewBackendConfig()
-	app.Server = server.NewServer(NewServerConfig())
-	app.Server.SetMiddleware(func() gin.HandlerFunc {
-		return middleware.Logger()
-	}).SetMiddleware(func() gin.HandlerFunc {
-		return middleware.Auth(auth.Auth{
-			TokenExpired: time.Hour * 24,
-			SecretKey:    app.Config.AuthKey,
-			Logger:       app.logger,
-		})
-	})
-	err := app.Server.Init(app.initRoutes)
-	return err
-}
-
-func (app *Backend) Run() error {
+func (app *ServiceAuth) Run() error {
 	if err := app.Server.Up(); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (app *Backend) Stop() {
+func (app *ServiceAuth) Init() error {
+	if err := NewEnv(app.EnvFile); err != nil {
+		return err
+	}
+	app.Flags = GetFlags(GetDefaultFlags())
+	app.Config = NewAuthConfig()
+	app.Server = server.NewServer(NewServerConfig())
+	app.Server.SetMiddleware(func() gin.HandlerFunc {
+		return middleware.Logger()
+	})
+	err := app.Server.Init(app.initRoutes)
+	return err
 }
 
-func (app *Backend) Logger() *alog.Alog {
+func (app *ServiceAuth) Stop() {
+}
+
+func (app *ServiceAuth) Logger() *alog.Alog {
 	return app.logger
 }

@@ -1,4 +1,4 @@
-package backend
+package auth
 
 import (
 	"github.com/GearFramework/emarket/internal/app"
@@ -12,12 +12,12 @@ const (
 	DefaultPort = 8080
 )
 
-func NewBackendConfig() *app.AppBackendConfig {
+func NewAuthConfig() *app.ServiceAuthConfig {
 	key := os.Getenv("AUTH_KEY")
 	if key == "" {
 		key = auth.SecretKey
 	}
-	return &app.AppBackendConfig{
+	return &app.ServiceAuthConfig{
 		AuthKey: key,
 	}
 }

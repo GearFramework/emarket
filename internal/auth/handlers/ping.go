@@ -14,13 +14,14 @@
 	limitations under the License.
 */
 
-package app
+package handlers
 
-import "github.com/GearFramework/emarket/internal/pkg/alog"
+import (
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
 
-type Market interface {
-	Init() error
-	Run() error
-	Stop()
-	Logger() *alog.Alog
+// Для тестирования работоспособности
+func Ping(ctx *gin.Context) {
+	ctx.Data(http.StatusOK, "text/plain", []byte("pong"))
 }

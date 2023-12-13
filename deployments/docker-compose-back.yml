@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: pgem
+    image: postgres:alpine
+    volumes:
+      - ./dump:/dump
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: em
+      POSTGRES_USER: em
+      POSTGRES_PASSWORD: 7766em
+
+volumes:
+  data01:
+    driver: local
+  uploads:

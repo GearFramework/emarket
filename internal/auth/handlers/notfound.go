@@ -14,13 +14,13 @@
 	limitations under the License.
 */
 
-package app
+package handlers
 
-import "github.com/GearFramework/emarket/internal/pkg/alog"
+import (
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
 
-type Market interface {
-	Init() error
-	Run() error
-	Stop()
-	Logger() *alog.Alog
+func NotFound(ctx *gin.Context) {
+	ctx.Status(http.StatusNotFound)
 }

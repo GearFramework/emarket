@@ -29,6 +29,8 @@ type HttpServer struct {
 	Config *Config
 }
 
+type MiddlewareFunc func() gin.HandlerFunc
+
 func NewServer(conf *Config) *HttpServer {
 	gin.SetMode(gin.ReleaseMode)
 	return &HttpServer{
@@ -36,6 +38,11 @@ func NewServer(conf *Config) *HttpServer {
 		Logger: alog.NewLogger(),
 		Router: gin.New(),
 	}
+}
+
+func (serv *HttpServer) SetMiddleware(mw MiddlewareFunc) *HttpServer {
+	serv.Router.Use(mw())
+	return serv
 }
 
 func (serv *HttpServer) Init(initRoutes func()) error {
