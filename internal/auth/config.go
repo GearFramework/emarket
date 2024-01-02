@@ -3,13 +3,8 @@ package auth
 import (
 	"github.com/GearFramework/emarket/internal/app"
 	"github.com/GearFramework/emarket/internal/pkg/auth"
-	"github.com/GearFramework/emarket/internal/pkg/server"
+	"github.com/GearFramework/emarket/internal/pkg/db"
 	"os"
-	"strconv"
-)
-
-const (
-	DefaultPort = 8080
 )
 
 func NewAuthConfig() *app.ServiceAuthConfig {
@@ -22,13 +17,11 @@ func NewAuthConfig() *app.ServiceAuthConfig {
 	}
 }
 
-func NewServerConfig() *server.Config {
-	port, err := strconv.Atoi(os.Getenv("BACKEND_PORT"))
-	if err != nil {
-		port = DefaultPort
-	}
-	return &server.Config{
-		Addr: os.Getenv("BACKEND_ADDR"),
-		Port: port,
+func NewStorageConfig() *db.StorageConfig {
+	return &db.StorageConfig{
+		//Host:     gear.Getenv("REDIS_HOST", redis.DefaultHost),
+		//Port:     gear.AtoUI16(os.Getenv("REDIS_PORT"), redis.DefaultPort),
+		//Password: gear.Getenv("REDIS_PASSWORD", redis.DefaultPassword),
+		//Database: gear.AtoI(os.Getenv("REDIS_DATABASE"), redis.DefaultDB),
 	}
 }

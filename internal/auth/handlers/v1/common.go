@@ -8,8 +8,16 @@ import (
 
 func LoginBadRequest(ctx *gin.Context, message string) {
 	ctx.JSON(http.StatusBadRequest, models.ResponseInvalidLogin{
-		models.Response{Status: models.Ok},
-		uint32(400),
-		message,
+		Response:     models.Response{Status: models.Ok},
+		ErrorCode:    uint32(400),
+		ErrorMessage: message,
+	})
+}
+
+func RegisterBadRequest(ctx *gin.Context, message string) {
+	ctx.JSON(http.StatusBadRequest, models.ResponseInvalidRegister{
+		Response:     models.Response{Status: models.Ok},
+		ErrorCode:    uint32(400),
+		ErrorMessage: message,
 	})
 }

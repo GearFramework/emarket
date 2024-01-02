@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"context"
 	"errors"
 	"github.com/GearFramework/emarket/internal/models"
 	"github.com/GearFramework/emarket/internal/pkg/alog"
@@ -35,10 +34,6 @@ func (a Auth) IdentityByCookie(cookie *http.Cookie) (string, error) {
 		return "", ErrInvalidAuthorization
 	}
 	return "", nil
-}
-
-func (a Auth) Login(ctx context.Context, r *models.RequestLogin) {
-
 }
 
 //

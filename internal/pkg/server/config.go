@@ -18,11 +18,25 @@ package server
 
 import (
 	"fmt"
+	"github.com/GearFramework/emarket/internal/pkg/gear"
+	"os"
+)
+
+const (
+	DefaultAddr = "localhost"
+	DefaultPort = 8080
 )
 
 type Config struct {
 	Addr string
 	Port int
+}
+
+func NewServerConfig() *Config {
+	return &Config{
+		Addr: gear.Getenv("BACKEND_ADDR", DefaultAddr),
+		Port: gear.AtoI(os.Getenv("BACKEND_PORT"), DefaultPort),
+	}
 }
 
 func (conf *Config) GetDSN() string {

@@ -8,12 +8,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type Connector interface {
-	Open() error
-	Close()
-	Ping() error
-}
-
 type StorageConnection struct {
 	DB        *sqlx.DB
 	config    *StorageConfig

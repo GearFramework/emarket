@@ -11,6 +11,9 @@ func (app *ServiceAuth) initRoutes() {
 	a := auth.Auth{
 		SecretKey: app.Config.AuthKey,
 	}
+	app.Server.Router.GET("/v1/register", func(ctx *gin.Context) {
+		v1.Register(ctx, a)
+	})
 	app.Server.Router.GET("/v1/login", func(ctx *gin.Context) {
 		v1.Login(ctx, a)
 	})

@@ -21,7 +21,7 @@ func NewEnv(envFile string) error {
 func GetFlags(defaultFlags *Flags) *Flags {
 	_ = mergo.Merge(defaultFlags, GetDefaultFlags())
 	conf := &Flags{
-		Addr: *flag.String("a", defaultFlags.Addr, fmt.Sprintf("Адрес", defaultFlags.Addr)),
+		Addr: *flag.String("a", defaultFlags.Addr, fmt.Sprintf("Адрес %s", defaultFlags.Addr)),
 	}
 	flag.Parse()
 	return conf

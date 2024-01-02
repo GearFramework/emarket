@@ -18,7 +18,9 @@ package auth
 
 import (
 	"github.com/GearFramework/emarket/internal/app"
+	"github.com/GearFramework/emarket/internal/models"
 	"github.com/GearFramework/emarket/internal/pkg/alog"
+	"github.com/GearFramework/emarket/internal/pkg/cache/redis"
 	"github.com/GearFramework/emarket/internal/pkg/server"
 	"github.com/GearFramework/emarket/internal/pkg/server/middleware"
 	"github.com/gin-gonic/gin"
@@ -29,6 +31,8 @@ type ServiceAuth struct {
 	Flags   *Flags
 	Server  *server.HttpServer
 	Config  *app.ServiceAuthConfig
+	Cache   models.Cachable
+	Storage models.Storable
 	logger  *alog.Alog
 }
 
@@ -46,13 +50,19 @@ func (app *ServiceAuth) Run() error {
 	return nil
 }
 
+// Init initialize auth service
 func (app *ServiceAuth) Init() error {
 	if err := NewEnv(app.EnvFile); err != nil {
 		return err
 	}
 	app.Flags = GetFlags(GetDefaultFlags())
 	app.Config = NewAuthConfig()
-	app.Server = server.NewServer(NewServerConfig())
+	app.Cache = redis.NewCache(redis.NewRedisConfig())
+	if err := app.Cache.(*redis.CacheRedis).InitCache(); err != nil {
+		return err
+	}
+	//app.Storage = db.NewStorage()
+	app.Server = server.NewServer(server.NewServerConfig())
 	app.Server.SetMiddleware(func() gin.HandlerFunc {
 		return middleware.Logger()
 	})

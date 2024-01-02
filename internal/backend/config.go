@@ -12,12 +12,12 @@ const (
 	DefaultPort = 8080
 )
 
-func NewBackendConfig() *app.AppBackendConfig {
+func NewBackendConfig() *app.ServiceBackendConfig {
 	key := os.Getenv("AUTH_KEY")
 	if key == "" {
 		key = auth.SecretKey
 	}
-	return &app.AppBackendConfig{
+	return &app.ServiceBackendConfig{
 		AuthKey: key,
 	}
 }
