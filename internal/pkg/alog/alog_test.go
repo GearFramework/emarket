@@ -6,6 +6,6 @@ import (
 )
 
 func TestNewLogger(t *testing.T) {
-	log := NewLogger()
+	log := NewLogger("Test")
 	assert.IsType(t, &Alog{}, log)
 }

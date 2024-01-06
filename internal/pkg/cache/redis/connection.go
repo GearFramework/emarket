@@ -21,7 +21,7 @@ type Connection struct {
 func NewConnection(config *ConnectionConfig) *Connection {
 	return &Connection{
 		Config: config,
-		logger: alog.NewLogger(),
+		logger: alog.NewLogger("Redis " + config.GetDSN()),
 	}
 }
 
@@ -55,7 +55,7 @@ func (conn *Connection) attemptsConnection(numberConnectionAttempts int8) error 
 			break
 		}
 		conn.logger.Error(err.Error())
-		conn.logger.Info(fmt.Sprintf("Pause: %d sec", conn.Config.ConnectDelay))
+		conn.logger.Info(fmt.Sprintf("pause: %d sec", conn.Config.ConnectDelay))
 		if conn.Config.ConnectAttempts > 0 &&
 			numberConnectionAttempts >= conn.Config.ConnectAttempts {
 			break
@@ -67,7 +67,7 @@ func (conn *Connection) attemptsConnection(numberConnectionAttempts int8) error 
 // N-ная попытка подключения к redis
 func (conn *Connection) tryingToConnect(numberConnectionAttempts int8) error {
 	conn.logger.Info(fmt.Sprintf(
-		"Attempt %d of %d to connect to Redis",
+		"attempt %d of %d to connect to Redis",
 		numberConnectionAttempts,
 		conn.Config.ConnectAttempts,
 	))
@@ -76,13 +76,16 @@ func (conn *Connection) tryingToConnect(numberConnectionAttempts int8) error {
 
 // Выполняет несколько попыток подключения к redis в соответствии с конфигом config.
 func (conn *Connection) connect() error {
-	conn.logger.Info("Try connect to: " + conn.Config.GetDSN())
+	conn.logger.Info("try connect to: " + conn.Config.GetDSN())
 	conn.DB = redis.NewClient(&redis.Options{
 		Addr:     conn.Config.GetDSN(),
 		Password: conn.Config.Password,
 		DB:       conn.Config.Database,
 	})
-	conn.logger.Info("Successful redis connected")
+	if err := conn.Ping(); err != nil {
+		return err
+	}
+	conn.logger.Info("successful redis connected")
 	return nil
 }
 
@@ -98,7 +101,7 @@ func (conn *Connection) Close() {
 		if err := conn.DB.Close(); err != nil {
 			conn.logger.Error(err.Error())
 		} else {
-			conn.logger.Info("Redis connection closed.")
+			conn.logger.Info("redis connection closed")
 		}
 	}
 }
@@ -109,7 +112,7 @@ func (conn *Connection) BackgroundCheckConnect() {
 	for {
 		<-time.After(tryoutInterval)
 		if err := conn.Ping(); err != nil {
-			fmt.Println(err)
+			conn.logger.Errorf("background check connection error: %s", err.Error())
 			_ = conn.connect()
 		}
 	}

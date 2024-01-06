@@ -35,7 +35,7 @@ func NewServer(conf *Config) *HttpServer {
 	gin.SetMode(gin.ReleaseMode)
 	return &HttpServer{
 		Config: conf,
-		Logger: alog.NewLogger(),
+		Logger: alog.NewLogger("Server " + conf.GetDSN()),
 		Router: gin.New(),
 	}
 }
@@ -55,10 +55,10 @@ func (serv *HttpServer) Up() error {
 		Addr:    serv.Config.GetDSN(),
 		Handler: serv.Router,
 	}
-	serv.Logger.Infof("Start server at the %s", serv.Config.GetDSN())
+	serv.Logger.Infof("start server at the: %s", serv.Config.GetDSN())
 	err := serv.HTTP.ListenAndServe()
 	if err != nil {
-		serv.Logger.Errorf("Failed to Listen and Serve %s", err.Error())
+		serv.Logger.Errorf("failed: %s", err.Error())
 		return err
 	}
 	return nil

@@ -11,7 +11,7 @@ func TestRedis(t *testing.T) {
 	assert.NotNil(t, cache)
 	err := cache.InitCache()
 	assert.NoError(t, err)
-	err = cache.Set(context.Background(), "test", "test_val")
+	err = cache.Set(context.Background(), "test", "test_val", 0)
 	assert.NoError(t, err)
 	ex := cache.Exists(context.Background(), "test")
 	assert.Equal(t, true, ex)

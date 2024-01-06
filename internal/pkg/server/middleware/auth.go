@@ -16,7 +16,7 @@ const (
 var logger *alog.Alog
 
 func Auth(a models.Identifier) gin.HandlerFunc {
-	logger = alog.NewLogger()
+	logger = alog.NewLogger("IdentityMiddleware")
 	return func(ctx *gin.Context) {
 		cookie, err := ctx.Request.Cookie(CookieParamName)
 		a.IdentityByCookie(cookie)

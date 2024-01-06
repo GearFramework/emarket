@@ -37,7 +37,7 @@ type Backend struct {
 func NewBackend(envFile string) *Backend {
 	return &Backend{
 		EnvFile: envFile,
-		logger:  alog.NewLogger(),
+		logger:  alog.NewLogger("ShopBackend"),
 	}
 }
 

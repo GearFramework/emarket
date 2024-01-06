@@ -7,7 +7,7 @@ import (
 )
 
 func Logger() gin.HandlerFunc {
-	logger := alog.NewLogger()
+	logger := alog.NewLogger("LoggerMiddleware")
 	return func(ctx *gin.Context) {
 		start := time.Now()
 		ctx.Next()

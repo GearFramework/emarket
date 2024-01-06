@@ -16,7 +16,11 @@ func NewStorage(config *StorageConfig) *Storage {
 }
 
 func (s *Storage) InitStorage() error {
-	return s.conn.Open()
+	var err error
+	if err = s.conn.Open(); err == nil {
+		go s.conn.BackgroundCheckConnect()
+	}
+	return err
 }
 
 func (s *Storage) Close() {

@@ -18,13 +18,19 @@ package alog
 
 import (
 	"fmt"
-	"os"
 )
 
-type Alog struct{}
+const LogInfoPattern = "\u001B[0m%s [\u001B[34mINFO\u001B[0m] [\u001B[32m%s\u001B[0m] %s"
+const LogWarningPattern = "\u001B[0m%s [\u001B[33mWARNING\u001B[0m] [\u001B[32m%s\u001B[0m] %s"
+const LogErrorPattern = "\u001B[0m%s [\u001B[31mERROR\u001B[0m] [\u001B[32m%s\u001B[0m] %s"
+const LogFatalPattern = "\u001B[0m%s [\u001B[31mFATAL\u001B[0m] [\u001B[32m%s\u001B[0m] %s"
 
-func NewLogger() *Alog {
-	return &Alog{}
+type Alog struct {
+	name string
+}
+
+func NewLogger(name string) *Alog {
+	return &Alog{name}
 }
 
 func (l *Alog) Infof(format string, params ...interface{}) {
@@ -32,30 +38,29 @@ func (l *Alog) Infof(format string, params ...interface{}) {
 }
 
 func (l *Alog) Info(message string) {
-	fmt.Printf("%s INFO %s\n", LogTimeNow(), message)
+	fmt.Printf(LogInfoPattern+"\n", LogTimeNow(), l.name, message)
 }
 
 func (l *Alog) Errorf(format string, params ...interface{}) {
-	l.Info(fmt.Sprintf(format, params...))
+	l.Error(fmt.Sprintf(format, params...))
 }
 
 func (l *Alog) Error(message string) {
-	fmt.Printf("%s%s ERROR %s%s\n", string(ColorError), LogTimeNow(), message, string(ColorReset))
+	fmt.Printf(LogErrorPattern+"\n", LogTimeNow(), l.name, message)
 }
 
 func (l *Alog) Warnf(format string, params ...interface{}) {
-	l.Info(fmt.Sprintf(format, params...))
+	l.Warn(fmt.Sprintf(format, params...))
 }
 
 func (l *Alog) Warn(message string) {
-	fmt.Printf("%s%s ERROR %s%s\n", string(ColorWarning), LogTimeNow(), message, string(ColorReset))
+	fmt.Printf(LogWarningPattern+"\n", LogTimeNow(), l.name, message)
 }
 
 func (l *Alog) Fatalf(format string, params ...interface{}) {
-	l.Info(fmt.Sprintf(format, params...))
+	l.Fatal(fmt.Sprintf(format, params...))
 }
 
 func (l *Alog) Fatal(message string) {
-	fmt.Printf("%s%s FATAL %s%s\n", string(ColorError), LogTimeNow(), message, string(ColorReset))
-	os.Exit(1)
+	fmt.Printf(LogFatalPattern+"\n", LogTimeNow(), l.name, message)
 }
